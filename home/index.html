@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/images.css">
     <title>Document</title>
 </head>
 <body>
@@ -74,7 +75,19 @@
         </div>
     </div>
 
+    <!-- Separate Vue app for the image gallery; mounted by home/js/images.js -->
+    <div id="app2">
+      <h2>Example 'v-for' to create images</h2>
+      <p>The 'v-for' directive is used to create images based on the 'manyFoods' array in the Vue instance.</p>
+      <div>
+        <img v-for="x in manyFoods" v-bind:src="x" alt="Food">
+      </div>
+    </div>
+
+
+
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="js/script.js"></script>
+    <script src="js/images.js"></script>
 </body>
 </html>
