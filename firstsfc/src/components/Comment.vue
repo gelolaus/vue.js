@@ -1,7 +1,9 @@
 <template>
     <h1>Comments</h1>
     <ul>
-      <li v-for="comment in comments" :key="comment.id">{{ comment.name }} {{ comment.comment }}</li>
+      <li v-for="comment in comments" :key="comment.id">
+        <strong>{{ comment.name }}</strong>: {{ comment.body }}
+      </li>
     </ul>
   </template>
   
@@ -19,17 +21,21 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { supabase } from '../lib/supabaseClient'
+import { getComments as fetchComments } from '../lib/apiClient'
 
 const comments = ref([])
 
-async function getComments() {
-  const { data } = await supabase.from('comments').select()
-  comments.value = data
+async function loadComments() {
+  try {
+    const data = await fetchComments()
+    comments.value = data
+  } catch (error) {
+    console.error('Failed to load comments:', error)
+  }
 }
 
 onMounted(() => {
-  getComments()
+  loadComments()
 })
 
 </script>

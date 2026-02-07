@@ -20,38 +20,30 @@
   
   <script setup>
   import { ref } from 'vue';
-  import { supabase } from '../lib/supabaseClient'
+  import { createComment } from '../lib/apiClient'
 
   
   const name = ref('');
   const comment = ref('');
   const submissionStatus = ref(null);
   
-  // Your Supabase URL and Key - IMPORTANT!
-  const tableName = 'comments'; // Name of your Supabase table
-  
 async function submitComment() {
   submissionStatus.value = "Submitting...";
   
-  // Debug: Check if env variables are loaded
-  console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL);
-  console.log('Supabase Key exists:', !!import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY);
-  
   try {
-    const { data, error } = await supabase
-      .from(tableName)
-      .insert([{ name: name.value, comment: comment.value }]);
+    const commentData = {
+      name: name.value,
+      body: comment.value,
+      email: `${name.value.toLowerCase().replace(/\s+/g, '')}@example.com`,
+      postId: 1
+    };
 
-    if (error) {
-      console.error("Error inserting comment:", error);
-      console.error("Error details:", JSON.stringify(error, null, 2));
-      submissionStatus.value = `Error: ${error.message || 'Please try again.'}`;
-    } else {
-      console.log('Success! Data:', data);
-      submissionStatus.value = "Comment submitted successfully!";
-      name.value = ''; // Clear form fields
-      comment.value = '';
-    }
+    const data = await createComment(commentData);
+
+    console.log('Success! Data:', data);
+    submissionStatus.value = "Comment submitted successfully!";
+    name.value = ''; // Clear form fields
+    comment.value = '';
   } catch (err) {
     console.error("An unexpected error occurred:", err);
     submissionStatus.value = "An unexpected error occurred. Please try again later.";
